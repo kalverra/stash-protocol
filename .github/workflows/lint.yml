@@ -4,20 +4,13 @@ on: [pull_request]
 
 jobs:
   lint:
-    name: Foundry project
+    needs: [changes]
+    name: Prettier Formatting
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          # Make sure the actual branch is checked out when running on pull requests
-          ref: ${{ github.head_ref }}
-          # This is important to fetch the changes to the previous commit
-          fetch-depth: 0
-
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.2
-        with:
-          # This part is also where you can pass other options, for example:
-          prettier_options: --write **/*.{js,md}
-          only_changed: True
+      - name: Checkout the repo
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # v3.1.0
+      - name: Setup NodeJS
+        uses: ./.github/actions/setup-nodejs
+      - name: Run prettier check
+        run: pnpm prettier:check
