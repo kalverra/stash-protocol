@@ -3,10 +3,12 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 import "src/StashShareToken.sol";
+import {Utils} from "./Utils.sol";
 
 contract StashShareTokenTest is Test {
     StashShareToken public stashShareToken;
 
+    Utils internal utils;
     address payable[] internal users;
     address internal alice;
     address internal bob;
@@ -14,7 +16,6 @@ contract StashShareTokenTest is Test {
     function setUp() public {
         utils = new Utils();
         users = utils.createUsers(2);
-
         alice = users[0];
         vm.label(alice, "Alice");
         bob = users[1];
@@ -25,14 +26,14 @@ contract StashShareTokenTest is Test {
     }
 
     function testRedeemNotOwner() public {
-        // vm.expectRevert(Unauthorized.selector);
         vm.prank(address(0));
-        stashShareToken.redeem(1);
+        vm.expectRevert(bytes("Ownable: caller is not the owner"));
+        stashShareToken.redeem(alice, 1);
     }
 
     function testMintNotOwner() public {
-        // vm.expectRevert(Unauthorized.selector);
         vm.prank(address(0));
-        stashShareToken.mint(1);
+        vm.expectRevert(bytes("Ownable: caller is not the owner"));
+        stashShareToken.mint(alice, 1);
     }
 }
