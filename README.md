@@ -1,5 +1,7 @@
 # Stash Protocol
 
+[![Contract Tests](https://github.com/kalverra/stash-protocol/actions/workflows/test.yml/badge.svg)](https://github.com/kalverra/stash-protocol/actions/workflows/test.yml)
+
 Tired of all those shit coin scams? Tired of panic-trading all your dog tokens? Re-discover the joy of Index and Mutual funds with Stash Protocol.
 
 ## WARNING
