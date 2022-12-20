@@ -10,7 +10,19 @@ contract StashTest is Test {
     Stash public stash;
     StashShareToken public stashToken;
 
+    Utils internal utils;
+    address payable[] internal users;
+    address internal alice;
+    address internal bob;
+
     function setUp() public {
+        utils = new Utils();
+        users = utils.createUsers(2);
+        alice = users[0];
+        vm.label(alice, "Alice");
+        bob = users[1];
+        vm.label(bob, "Bob");
+
         stash = new Stash("Test Stash", "Test", "TST");
         vm.label(address(stash), "Stash");
         stashToken = StashShareToken(stash.sharesTokenAddress());
@@ -23,10 +35,11 @@ contract StashTest is Test {
 
     function testStash() public {
         assertEq(
-            stashToken.balanceOf(address(this)),
+            stashToken.balanceOf(alice),
             0,
             "We have more shares than expected"
         );
+        vm.prank(alice);
         (bool sent, ) = address(stash).call{value: 1 ether}("stash()");
         assertTrue(sent, "Error calling stash()");
         assertEq(
@@ -35,13 +48,14 @@ contract StashTest is Test {
             "Stash does not have sent ether"
         );
         assertEq(
-            stashToken.balanceOf(address(this)),
+            stashToken.balanceOf(alice),
             1 ether,
-            "Expected token amount not here"
+            "Alice doesn't expected Stash token amount"
         );
     }
 
     function testRedeem() public {
+        vm.prank(alice);
         (bool sent, ) = address(stash).call{value: 1 ether}("stash()");
         assertTrue(sent, "Error calling stash()");
         assertEq(
@@ -50,20 +64,21 @@ contract StashTest is Test {
             "Stash does not have sent ether"
         );
         assertEq(
-            stashToken.balanceOf(address(this)),
+            stashToken.balanceOf(alice),
             1 ether,
-            "Expected token amount not here"
+            "Alice doesn't have her balance of stash tokens"
         );
+        vm.prank(alice);
         stash.redeem(1 ether);
         assertEq(
-            address(this).balance,
-            1 ether,
+            address(stash).balance,
+            0,
             "Stash still has ether, not redeemed"
         );
         assertEq(
-            stashToken.balanceOf(address(this)),
+            stashToken.balanceOf(alice),
             0,
-            "I still have stash shares"
+            "Alice still has stash shares"
         );
     }
 }

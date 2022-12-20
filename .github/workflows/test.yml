@@ -1,15 +1,17 @@
-name: test
+name: Contract Tests
 
 on:
   pull_request:
   push:
+    branches:
+      - "main"
 
 env:
   FOUNDRY_PROFILE: ci
 
 jobs:
   test:
-    name: Foundry project
+    name: Foundry Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
