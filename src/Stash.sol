@@ -2,19 +2,33 @@
 pragma solidity ^0.8.17;
 
 import "./StashShareToken.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title A stash to hold multiple assets with tokens that can be redeemed
  * @dev At this point this is mostly a learning project with 0 audits or guarantees
  */
-contract Stash {
+contract Stash is Ownable {
+    /* ============ Events ============ */
     event Stashed(address indexed stasher, uint256 indexed amount);
     event Redeemed(address indexed redeemer, uint256 indexed amount);
+    event SetStashTargetDistribution();
 
+    /* ============ State Variables ============ */
+
+    // Target distribution amounts
+    mapping(address => uint256) public stashTargetDistribution;
+
+    // The token that indicates shares of the stash
     StashShareToken public shares;
+
+    // The token address for shares of the stash
     address public sharesTokenAddress;
+
+    // The full name of the stash
     string public stashName;
 
+    // Create our stash and share tokens
     constructor(
         string memory _stashName,
         string memory _stashToken,
@@ -23,6 +37,13 @@ contract Stash {
         stashName = _stashName;
         shares = new StashShareToken(_stashToken, _stashTokenSymbol);
         sharesTokenAddress = address(shares);
+    }
+
+    /**
+     * Big old TODO, this looks like it will be more complicated than I thought
+     */
+    function setDistribution() public onlyOwner {
+        emit SetStashTargetDistribution();
     }
 
     /**
