@@ -1,6 +1,7 @@
 # Stash Protocol
 
 [![Contract Tests](https://github.com/kalverra/stash-protocol/actions/workflows/test.yml/badge.svg)](https://github.com/kalverra/stash-protocol/actions/workflows/test.yml)
+[![Contract Coverage](https://codecov.io/github/kalverra/stash-protocol/branch/main/graph/badge.svg?token=TWK1U366JE)](https://codecov.io/github/kalverra/stash-protocol)
 
 Tired of all those shit coin scams? Tired of panic-trading all your dog tokens? Re-discover the joy of Index and Mutual funds with Stash Protocol.
 
