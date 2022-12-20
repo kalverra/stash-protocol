@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 import "src/Stash.sol";
 import "src/StashShareToken.sol";
+import {Utils} from "testutils/Utils.sol";
 
 contract StashTest is Test {
     Stash public stash;
