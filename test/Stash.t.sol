@@ -4,25 +4,14 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 import "src/Stash.sol";
 import "src/StashShareToken.sol";
-import {Utils} from "testutils/Utils.sol";
 
 contract StashTest is Test {
     Stash public stash;
     StashShareToken public stashToken;
 
-    Utils internal utils;
-    address payable[] internal users;
-    address internal alice;
-    address internal bob;
+    address internal alice = makeAddr("Alice");
 
     function setUp() public {
-        utils = new Utils();
-        users = utils.createUsers(2);
-        alice = users[0];
-        vm.label(alice, "Alice");
-        bob = users[1];
-        vm.label(bob, "Bob");
-
         stash = new Stash("Test Stash", "Test", "TST");
         vm.label(address(stash), "Stash");
         stashToken = StashShareToken(stash.sharesTokenAddress());
@@ -34,6 +23,7 @@ contract StashTest is Test {
     }
 
     function testStash() public {
+        vm.deal(alice, 1 ether);
         assertEq(
             stashToken.balanceOf(alice),
             0,
@@ -54,7 +44,18 @@ contract StashTest is Test {
         );
     }
 
+    function testStashInsufficientFunds() public {
+        vm.prank(alice);
+        (bool sent, ) = address(stash).call{value: 1 ether}("stash()"); // Try and stash when we have 0 eth
+        assertFalse(sent, "Tx should have reverted with no funds");
+
+        vm.prank(alice);
+        (sent, ) = address(stash).call("stash()"); // Try when specifying no eth
+        assertFalse(sent, "Shouldn't be able to stash with 0 eth value");
+    }
+
     function testRedeem() public {
+        vm.deal(alice, 1 ether);
         vm.prank(alice);
         (bool sent, ) = address(stash).call{value: 1 ether}("stash()");
         assertTrue(sent, "Error calling stash()");
